@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <router-view></router-view>
-  </div>
+    <div>
+      用户
+    </div>
 </template>
 
 <script>
@@ -10,6 +10,6 @@
   }
 </script>
 
-<style scoped lang="less">
+<style scoped>
 
 </style>

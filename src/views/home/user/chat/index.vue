@@ -1,6 +1,6 @@
 <template>
   <div>
-    <router-view></router-view>
+    小智同学
   </div>
 </template>
 
@@ -10,6 +10,6 @@
   }
 </script>
 
-<style scoped lang="less">
+<style scoped>
 
 </style>
