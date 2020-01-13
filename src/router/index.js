@@ -15,6 +15,7 @@ const SearchResult = () => import('../views/search/result')//搜索结果
 
 Vue.use(VueRouter)
 
+
 const routes = [
   {
     path: '/',
