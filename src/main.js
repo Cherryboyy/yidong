@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import Vant from 'vant'
-import 'vant/lib/index.css'
+import 'vant/lib/index.less'
 import 'amfe-flexible'
 //导入全局样式
 import './styles/index.less'
