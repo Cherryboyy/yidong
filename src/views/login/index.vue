@@ -4,15 +4,15 @@
     <van-cell-group>
       <van-field
         @blur="checkMobile"
-        :err-message="errMsg.mobile"
-        v-model.trim="loginForm.mobile"
+        :error-message="errMsg.mobile"
+        v-model="loginForm.mobile"
         label="手机号"
         placeholder="请输入手机号"
       />
       <van-field
         @blur="validCode"
         :error-message="errMsg.code"
-        v-model.trim="loginForm.code"
+        v-model="loginForm.code"
         label="验证码"
         placeholder="请输入验证码"
       >
@@ -26,6 +26,9 @@
 </template>
 
 <script>
+  import { login } from '../../api/user'
+  import { mapMutations } from 'vuex'
+
   export default {
     data () {
       return {
@@ -67,9 +70,12 @@
         this.errMsg.code = '' // 清空信息
         return true
       },
-      login () {
+      ...mapMutations(['updateUser']),
+      async login () {
+
         if (this.checkMobile() && this.validCode()) {
-          console.log('通过')
+          const data = await login(this.loginForm)
+          console.log(data)
         }
       }
     }

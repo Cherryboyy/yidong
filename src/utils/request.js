@@ -11,7 +11,6 @@ import store from '../store'
 
 //导入路由模块
 import router from '../router/index'
-import string from 'less/lib/less/functions/string'
 
 // 初始化一个axios实例
 // 此时我们调用instance就是使用axios
@@ -40,6 +39,8 @@ instance.interceptors.request.use(function (config) {
     // 我们可以直接把请求到的token注入到里面,如果token存在 就要注入
     config.headers['Authorization'] = `Bearer ${store.state.user.token}`
   }
+  // 配置信息
+  return config
 }, function (error) {
   //如果不能操控则返回错误
   return Promise.reject(error)
@@ -93,10 +94,6 @@ instance.interceptors.response.use(function (response) {
         router.push(toPath) // 跳转到回登录页
       }
     } else {
-      // 连refresh_token 都没有
-      //  当访问 页面时 => 去登录 => 登录成功之后 => 回到之前的页面  记住当前的地址 => 登录页面 => 读取地址  => 跳到地址
-      //  params 动态路由  user/:id
-      // query传参  user? id=123
       //   获取当前页面地址
       router.push(toPath)
     }
