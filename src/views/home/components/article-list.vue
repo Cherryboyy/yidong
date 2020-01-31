@@ -43,8 +43,17 @@ export default {
       //文章数据
       articles: [],
       refreshSuccessText: "更新成功", //  文本
-      downLoading: false // 是否开启下拉刷新
+      downLoading: false, // 是否开启下拉刷新
+      //定义一个给时间戳，告诉服务器要求我要什么时候的东西
+      timestamp: null
     };
+  },
+  props: {
+    channel_id: {
+      type: Number, //指定传入的类型
+      required: true, //
+      default: null //给props一个默认值
+    }
   },
   methods: {
     // 上拉加载方法
