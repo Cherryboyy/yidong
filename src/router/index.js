@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 // 导入vuex管理的toenk
-import store from '@/store'
+// import store from '@/store'
 // import Home from '../views/home/index.vue'
 const Layout = () => import('../views/layout') // 布局的组件
 const Home = () => import('../views/home/index') // 主页组件
