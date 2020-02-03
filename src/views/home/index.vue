@@ -28,7 +28,7 @@ export default {
   methods: {
     async getMyChannels() {
       let data = await getMyChannels();
-      console.log(data);
+      // console.log(data);
       this.channels = data.channels;
     }
   },
