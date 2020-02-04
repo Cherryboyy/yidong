@@ -2,34 +2,46 @@
   <div class="container">
     <van-tabs v-model="activeIndex" swipeable>
       <van-tab :title="channel.name" v-for="channel in channels" :key="channel.id">
-        <article-list :channel_id="channel.id"></article-list>
+        <article-list @showMoreAction="openMoreAction" :channel_id="channel.id"></article-list>
       </van-tab>
     </van-tabs>
     <span class="bar_btn">
       <van-icon name="wap-nav" />
     </span>
+    <!-- 放置弹层 -->
+    <van-popup :style="{ width: '80%' }" v-model="showMoreAction">
+      <more-action></more-action>
+    </van-popup>
   </div>
 </template>
 
 <script>
 import ArticleList from "./components/article-list"; //引入封装的加载组件
+import MoreAction from "./components/more-action";
 import { getMyChannels } from "@/api/channels";
 export default {
   data() {
     return {
-      activeIndex: 1,
+      activeIndex: 0,
       // 频道获取到的数据
-      channels: []
+      channels: [],
+      showMoreAction: false,
+      articleId: null // 定义一个值接收
     };
   },
   components: {
-    ArticleList
+    ArticleList,
+    MoreAction
   },
   methods: {
     async getMyChannels() {
       let data = await getMyChannels();
       // console.log(data);
       this.channels = data.channels;
+    },
+    openMoreAction(artId) {
+      this.showMoreAction = true;
+      this.articleId = artId;
     }
   },
   created() {
