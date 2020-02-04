@@ -4,7 +4,7 @@ import router from './permission'
 // import "@/permission"
 import store from './store'
 import Vant, {
-  Lazyload
+  Lazyload,
 } from 'vant'
 import 'vant/lib/index.less'
 import 'amfe-flexible'

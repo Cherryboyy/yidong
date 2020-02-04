@@ -26,59 +26,71 @@
 </template>
 
 <script>
-import { login } from '../../api/user'
-import { mapMutations } from 'vuex'
+import { login } from "../../api/user";
+import { mapMutations } from "vuex";
 
 export default {
-  data () {
+  data() {
     return {
       loginForm: {
-        mobile: '13911111111',
-        code: '246810'
+        mobile: "13911111111",
+        code: "246810"
       },
       // 专门的提示信息
       errMsg: {
-        mobile: '',
-        code: ''
+        mobile: "",
+        code: ""
       }
-    }
+    };
   },
   methods: {
-    checkMobile () {
+    checkMobile() {
       //  判断 为空 判断格式
       if (!this.loginForm.mobile) {
-        this.errMsg.mobile = '手机号不能为空'
-        return false
+        this.errMsg.mobile = "手机号不能为空";
+        return false;
       }
       // 判断格式
       if (!/^1[3-9]\d{9}$/.test(this.loginForm.mobile)) {
-        this.errMsg.mobile = '手机格式不正确'
-        return false
+        this.errMsg.mobile = "手机格式不正确";
+        return false;
       }
-      this.errMsg.mobile = '' // 清空信息
-      return true
+      this.errMsg.mobile = ""; // 清空信息
+      return true;
     },
-    validCode () {
+    validCode() {
       if (!this.loginForm.code) {
-        this.errMsg.code = '验证码不能为空'
-        return false
+        this.errMsg.code = "验证码不能为空";
+        return false;
       }
       if (!/^\d{6}$/.test(this.loginForm.code)) {
-        this.errMsg.code = '验证码必须为6位数字'
-        return false
+        this.errMsg.code = "验证码必须为6位数字";
+        return false;
       }
-      this.errMsg.code = '' // 清空信息
-      return true
+      this.errMsg.code = ""; // 清空信息
+      return true;
     },
-    ...mapMutations(['updateUser']),
-    async login () {
+    ...mapMutations(["updateUser"]),
+    async login() {
       if (this.checkMobile() && this.validCode()) {
-        const data = await login(this.loginForm)
-        console.log(data)
+        const data = await login(this.loginForm); // 获取结果
+        console.log(data);
+
+        // 拿到了token 更新token信息
+        // this.$store.commit('updateUser', { user: data }) // 第一种写法
+        this.updateUser({ user: data }); // 更新用户信息
+        // 登录成功
+        // this.$gnotify({ type: "success", message: "登录成功" });
+        // 主要通知
+        // Notify({ type: "primary", message: "通知内容" });
+        // 跳转
+        // 两种情况 1 redirectUrl (登录未遂 => 登录  => 遂) 2 没有 redirectUrl 跳到首页
+        let { redirectUrl } = this.$route.query; // 解构当前的路由信息
+        this.$router.push(redirectUrl || "/"); // 短路表达式
       }
     }
   }
-}
+};
 </script>
 
 <style scoped>

@@ -6,16 +6,16 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: auth.getUser()//从缓存中读取数据
+    user: auth.getUser() //从缓存中读取数据
   },
   mutations: {
-    updateUser (state, payload) {
-      state.user = payload.user//更新state里面的数据
-      auth.setUser()//要将数据同步到缓存中
+    updateUser(state, payload) {
+      state.user = payload.user //更新state里面的数据
+      auth.setUser(payload.user) //要将数据同步到缓存中
     },
-    clearUser (state) {
+    clearUser(state) {
       state.user = {}
-      auth.delUser()//缓存中的数据也要清空
+      auth.delUser() //缓存中的数据也要清空
     }
   },
   actions: {},

@@ -21,7 +21,7 @@
               <span>{{ article.aut_name }}</span>
               <span>{{ article.comm_count }}评论</span>
               <span>{{ article.pubdate | relTime}}</span>
-              <span class="close">
+              <span class="close" v-if="user.token">
                 <van-icon name="cross"></van-icon>
               </span>
             </div>
@@ -33,6 +33,7 @@
 </template>
 <script>
 import { getArticles } from "@/api/article";
+import { mapState } from "vuex";
 export default {
   name: "article-list",
   data() {
@@ -55,6 +56,9 @@ export default {
       required: true, //
       default: null //给props一个默认值
     }
+  },
+  computed: {
+    ...mapState(["user"])
   },
   methods: {
     // 上拉加载方法
