@@ -5,13 +5,20 @@
         <article-list @showMoreAction="openMoreAction" :channel_id="channel.id"></article-list>
       </van-tab>
     </van-tabs>
-    <span class="bar_btn">
+    <span class="bar_btn" @click="showChannelEdit=true">
       <van-icon name="wap-nav" />
     </span>
     <!-- 放置弹层 -->
     <van-popup :style="{ width: '80%' }" v-model="showMoreAction">
-      <more-action @dislike="dislike"></more-action>
+      <more-action
+        @dislike="dislikeOrReport($event,'dislike')"
+        @report="dislikeOrReport($event,'report')"
+      ></more-action>
     </van-popup>
+    <van-action-sheet :round="false" title="编辑频道" v-model="showChannelEdit">
+      <channel-edit :activeIndex="activeIndex" @selectChannel="selectChannel" :channels="channels"></channel-edit>
+    </van-action-sheet>
+    <channel-edit v-model="showChannelEdit"></channel-edit>
   </div>
 </template>
 
@@ -21,6 +28,7 @@ import MoreAction from "./components/more-action";
 import { getMyChannels } from "@/api/channels";
 import { disLikeArticle } from "@/api/article";
 import eventBus from "../../utils/eventBus";
+import channelEdit from "./components/channel-edit";
 export default {
   data() {
     return {
@@ -28,14 +36,22 @@ export default {
       // 频道获取到的数据
       channels: [],
       showMoreAction: false,
-      articleId: null // 定义一个值接收
+      articleId: null, // 定义一个值接收
+      showChannelEdit: false
     };
   },
   components: {
     ArticleList,
-    MoreAction
+    MoreAction,
+    channelEdit
   },
   methods: {
+    // 切换到对应的频道 关闭弹层
+    selectChannel(id) {
+      let index = this.channels.findIndex(item => item.id === id); // 获取切换频道的索引
+      this.activeIndex = index; // 将tabs激活标签切换到对应的标签下
+      this.showChannelEdit = false; // 关闭弹层
+    },
     async getMyChannels() {
       let data = await getMyChannels();
       // console.log(data);
@@ -46,12 +62,19 @@ export default {
       this.articleId = artId;
     },
     // 不喜欢文章
-    async dislike() {
+    // async dislike() {
+    // 不喜欢文章或者举报文章
+    async dislikeOrReport(params, operatetype) {
       try {
         if (this.articleId) {
-          await disLikeArticle({
-            target: this.articleId
-          });
+          operatetype === "dislike"
+            ? await disLikeArticle({
+                target: this.articleId
+              })
+            : await reportArticle({
+                target: this.articleId,
+                type: params
+              });
           this.$gnotify({ type: "success", message: "操作成功" });
           eventBus.$emit(
             "delArticle",
@@ -124,6 +147,17 @@ export default {
     z-index: 1000;
     &::before {
       font-size: 20px;
+    }
+  }
+}
+.van-action-sheet {
+  max-height: 100%;
+  height: 100%;
+  .van-action-sheet__header {
+    background: #3296fa;
+    color: #fff;
+    .van-icon-close {
+      color: #fff;
     }
   }
 }

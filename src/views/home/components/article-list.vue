@@ -22,6 +22,7 @@
               <span>{{ article.comm_count }}评论</span>
               <span>{{ article.pubdate | relTime}}</span>
               <!-- 点击弹出 -->
+              <!-- v-if="user.token" -->
               <span
                 class="close"
                 v-if="user.token"
