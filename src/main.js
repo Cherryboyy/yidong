@@ -8,6 +8,9 @@ import 'vant/lib/index.less'
 import 'amfe-flexible'
 //导入全局样式
 import './styles/index.less'
+//导入时间处理
+import plugin from './utils/plugin'
+Vue.use(plugin)
 
 Vue.use(Vant)
 
