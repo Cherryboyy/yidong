@@ -16,7 +16,6 @@ import plugin from './utils/plugin'
 Vue.use(plugin)
 // 注册好了 支持v-lazy指令
 Vue.use(Lazyload)
-
 Vue.use(Vant)
 
 Vue.config.productionTip = false

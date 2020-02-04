@@ -9,6 +9,10 @@ function relTime(date) {
 }
 export default {
   install(Vue) {
+    Vue.prototype.$gnotify = (params) => Vue.prototype.$notify({
+      duration: 800,
+      ...params
+    }) // 小伎俩
     Vue.filter('relTime', relTime)
   }
 }
