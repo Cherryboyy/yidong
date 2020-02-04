@@ -48,7 +48,7 @@ export default {
       let { q } = this.$route.query; // 从地址栏解析查询参数
       let data = await searchArticle({ ...this.page, q });
       console.log(data);
-      
+
       // 上拉加载的业务  =>  追加到队尾
       this.articles.push(...data.results);
       // 手动关闭加载状态

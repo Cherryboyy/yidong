@@ -53,3 +53,19 @@ export function searchArticle(params) {
     params
   })
 }
+/***
+ *
+ *获取文章详情
+ * *****/
+export function getArticleInfo(id) {
+  return request({
+    url: `/articles/${id}`
+  })
+}
+/** 获取评论**/
+export function getComments(params) {
+  return request({
+    url: '/comments',
+    params
+  })
+}
