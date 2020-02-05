@@ -16,17 +16,17 @@ import router from '../router/index'
 // 此时我们调用instance就是使用axios
 const instance = axios.create({
   //构造参数
-  baseURL: 'http://ttapi.research.itcast.cn/app/v1_0',//设置请求的常用地址
+  baseURL: 'http://ttapi.research.itcast.cn/app/v1_0', //设置请求的常用地址
   // ransformResponse的意思就是可以修改后台响应出来的数据
-  transformResponse: [function (data) {//data就是后台返回的数据，此时我们要对后台返回的数据做处理
+  transformResponse: [function (data) { //data就是后台返回的数据，此时我们要对后台返回的数据做处理
     try {
       // 此处对 data 进行任意转换处理
       //  当后台 响应的字符串 回到axios请求时 就会触发
       //  data是一个字符串  把字符串转化成 对象并且返回 默认的是JSON.parse()
       // 如果data是一个空字符串  直接转化就会报错
-      return JSONBig.parse(data)//如果是最大安全值的我们直接把数据响应
+      return JSONBig.parse(data) //如果是最大安全值的我们直接把数据响应
     } catch (e) {
-      return data// 如果失败 就把字符串直接返回
+      return data // 如果失败 就把字符串直接返回
     }
   }]
 })
@@ -35,7 +35,7 @@ const instance = axios.create({
 //这是固定写法，参数config就是返回的里面所有的配置，一些请求到的选项
 instance.interceptors.request.use(function (config) {
   // config就是请求的参数
-  if (store.state.user.token) {//我们此处判断一下vuex里面保管的token里面又没有值
+  if (store.state.user.token) { //我们此处判断一下vuex里面保管的token里面又没有值
     // 我们可以直接把请求到的token注入到里面,如果token存在 就要注入
     config.headers['Authorization'] = `Bearer ${store.state.user.token}`
   }
@@ -48,7 +48,7 @@ instance.interceptors.request.use(function (config) {
 
 //设置一个响应拦截器
 instance.interceptors.response.use(function (response) {
-// 对响应数据做点什么
+  // 对响应数据做点什么
   // 得到的数据response实际上被axios包了一层
   try {
     //把数据解构
@@ -64,8 +64,10 @@ instance.interceptors.response.use(function (response) {
     //判断一下响应状态是不是401，如果是的话直接跳转到登录页面
     let toPath = {
       path: '/login',
-      query: { redirectUrl: router.currentRoute.path }//这个是路由里面的方法，可以直接获取当前的路由
-    }//定义了一个跳转的对象
+      query: {
+        redirectUrl: router.currentRoute.fullPath
+      } //这个是路由里面的方法，可以直接获取当前的路由
+    } //定义了一个跳转的对象
     // 如果是token过期，我们还要判断一下是否还有备用的refresh_token
     if (store.state.user.refresh_token) {
       try {
@@ -83,13 +85,13 @@ instance.interceptors.response.use(function (response) {
         store.commit('updateUser', {
           //把新的token存入进去
           user: {
-            token: result.data.data.token,//拿到新的token
+            token: result.data.data.token, //拿到新的token
             refresh_token: store.state.user.refresh_token
           }
-        })//更新到vuex数据中，同时更新到本地缓存中
+        }) //更新到vuex数据中，同时更新到本地缓存中
         return instance(error.config)
       } catch (e) {
-//  如果错误 表示补救措施也没用了 应该跳转到登录页 并且 把废掉的user全都干掉
+        //  如果错误 表示补救措施也没用了 应该跳转到登录页 并且 把废掉的user全都干掉
         store.commit('clearUser') // 所有的用户信息清空
         router.push(toPath) // 跳转到回登录页
       }
