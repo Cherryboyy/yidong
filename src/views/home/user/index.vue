@@ -59,9 +59,10 @@ export default {
   },
 
   methods: {
-    ...mapMutations(["clearUser"]),
+    ...mapMutations(["clearUser", "updatePhoto"]),
     async getUserInfo() {
       this.userInfo = await getUserInfo();
+      this.updatePhoto({ photo: this.userInfo.photo }); //吧用户头像存储到vuex中
     },
     // 登出方法
     async lgout() {

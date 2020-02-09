@@ -6,7 +6,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: auth.getUser() //从缓存中读取数据
+    user: auth.getUser(), //从缓存中读取数据
+    photo: null //用户头像数据
   },
   mutations: {
     updateUser(state, payload) {
@@ -16,6 +17,9 @@ export default new Vuex.Store({
     clearUser(state) {
       state.user = {}
       auth.delUser() //缓存中的数据也要清空
+    },
+    updatePhoto(state, payload) {
+      state.photo = payload.photo
     }
   },
   actions: {},

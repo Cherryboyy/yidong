@@ -58,6 +58,7 @@
 <script>
 import { getUserProfile, updateImg, saveUserInfo } from "@/api/user";
 import dayjs from "dayjs";
+import { mapMutations } from "vuex";
 export default {
   name: "",
   data() {
@@ -79,6 +80,7 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["updatePhoto"]),
     btnName() {
       if (this.user.name.length < 1 || this.user.name.length > 7) {
         this.nameMsg = "您的用户昵称不符合1-7的长度要求";
@@ -104,11 +106,11 @@ export default {
     // 获取用户资料的方法
     async getUserProfile() {
       let data = await getUserProfile();
-      console.log(data);
-
+      // console.log(data);
+      this.updatePhoto({ photo: data.photo });
       // 将数据赋值给user
       this.user = data;
-      this.photo = data.photo;
+      // this.photo = data.photo;
     },
     openChangeFile() {
       this.$refs.myFile.click(); // 触发文件上传组件的点击方法
@@ -120,6 +122,9 @@ export default {
       // 应该 把地址 同步设置给 当前页面的数据
       this.user.photo = result.photo; // 将上传成功的头像设置给当前头像
       this.showPhoto = false; // 关闭弹层
+      this.updatePhoto({
+        photo: result.photo
+      }); // 调用mutations方法 将数据设置给公共状态
     },
     // 保存方法  调用保存接口  这里是不需要传photo数据的
     // 1 我们通过别的方法 更新了头像
