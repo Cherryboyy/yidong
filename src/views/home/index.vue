@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <van-tabs v-model="activeIndex" swipeable>
+    <van-tabs v-model="activeIndex" swipeable @change="changeTab">
       <van-tab :title="channel.name" v-for="channel in channels" :key="channel.id">
         <article-list @showMoreAction="openMoreAction" :channel_id="channel.id"></article-list>
       </van-tab>
@@ -46,6 +46,13 @@ export default {
     channelEdit
   },
   methods: {
+    changeTab() {
+      // 通知所有的article-list实例 告诉他们 我切换页签了,把切换的页签传过去
+      // article-list组件需要 拿到传过去的的页签 看看是否是自己所在的页签
+      // 如果是自己所在的页签 就需要 判断一下 自己的组件是否有滚动 如果有滚动数据 就滚动对应的位置
+      //  触发一个公共事件 事件名叫 切换页签 携带参数
+      eventBus.$emit("changeTab", this.channels[this.activeIndex].id);
+    },
     // 切换到对应的频道 关闭弹层
     selectChannel(id) {
       let index = this.channels.findIndex(item => item.id === id); // 获取切换频道的索引

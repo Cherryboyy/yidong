@@ -1,7 +1,7 @@
 <template>
   <!-- 这里注意 这个div设置了滚动条 目的是 给后面做 阅读记忆 留下伏笔 -->
   <!-- 阅读记忆 => 看文章看到一半 滑到中部 去了别的页面 当你回来时 文章还在你看的位置 -->
-  <div class="scroll-wrapper">
+  <div ref="myScroll" class="scroll-wrapper" @scroll="remeber">
     <van-pull-refresh v-model="downLoading" @refresh="onRefresh" :success-text="refreshSuccessText">
       <van-list v-model="upLoading" :finished="finished" @load="onLoad" finished-text="没有了">
         <van-cell
@@ -58,7 +58,8 @@ export default {
       refreshSuccessText: "更新成功", //  文本
       downLoading: false, // 是否开启下拉刷新
       //定义一个给时间戳，告诉服务器要求我要什么时候的东西
-      timestamp: null
+      timestamp: null,
+      scrollTop: 0 //记录滚动位置
     };
   },
   props: {
@@ -85,8 +86,32 @@ export default {
         }
       }
     });
+    // 只要开启一次监听 以后触发了事件 就会进入到我们的回调函数
+    // 开启一个新的监听 监听当前tab切换的事件
+    eventBus.$on("changeTab", id => {
+      // 判断一个id是否等于 该组件通过props得到的频道id
+      if (id === this.channel_id) {
+        // 如果相等 说明找对了article-list实例
+        // 因为artcile-list是有多个的
+        // 为什么这里没有滚动呢?
+        // 是因为 切换事件之后 会执行 dom的更新 => dom的更新是异步的
+        // 如果保证自己 在上一次完整页面渲染更新之后 执行逻辑
+        // this.$nextTick => 会在数据 响应式之后 页面渲染完毕之后执行
+        // this.$nextTick会保证在changeTab动作切换完成并且完成界面渲染之后执行
+        this.$nextTick(() => {
+          if (this.scrollTop && this.$refs.myScroll) {
+            // 表示 该文章列表是存在滚动的
+            this.$refs.myScroll.scrollTop = this.scrollTop;
+          }
+        });
+      }
+    });
   },
   methods: {
+    //记录滚动位置
+    remeber(event) {
+      this.scrollTop = event.target.scrollTop;
+    },
     // 上拉加载方法
     async onLoad() {
       let data = await getArticles({
@@ -132,6 +157,11 @@ export default {
     //   created() {
     //     this.getArticles();
     //   }
+  },
+  activated() {
+    if (this.scrollTop && this.$refs.myScroll) {
+      this.$refs.myScroll.scrollTop = this.scrollTop;
+    }
   }
 };
 </script>
