@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <van-nav-bar fixed left-arrow @click-left="$router.back()" title="小智同学"></van-nav-bar>
-    <div class="chat-list">
+    <div class="chat-list" ref="myList">
       <div
         :class="{ left: item.name === 'xz', right: item.name!='xz' }"
         class="chat-item"
@@ -38,6 +38,11 @@ export default {
       list: [] //存储聊天记录
     };
   },
+  //我们退出小智之后要关闭连接
+  beforeDestroy() {
+    this.socket.close();
+    console.log("销毁成功");
+  },
   computed: {
     ...mapState(["photo", "user"])
   },
@@ -48,6 +53,12 @@ export default {
       this.socket.emit("message", obj);
       this.list.push(obj);
       this.value = ""; // 清空消息
+      this.scrollBottom();
+    },
+    scrollBottom() {
+      this.$nextTick(() => {
+        this.$refs.myList.scrollTop = this.$refs.myList.scrollHeight;
+      });
     }
   },
   created() {
@@ -65,6 +76,7 @@ export default {
       // console.log(data);
 
       this.list.push({ ...data, name: "xz" }); // name:xz相当于 给我们的消息记录一下 谁发了这个消息
+      this.scrollBottom();
     });
   }
 };
